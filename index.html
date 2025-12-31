@@ -65,10 +65,12 @@
             font-size: 1rem;
             border-radius: 4px;
         }
+        
+        /* UPDATED BUTTON STYLE (Gold/Bronze instead of Red) */
         button {
             padding: 12px 30px;
-            background: #740001;
-            color: #fff;
+            background: linear-gradient(to bottom, #d3a625, #b8860b);
+            color: #3e2723; /* Dark Brown Text */
             border: 2px solid #d3a625;
             font-family: 'Cinzel', serif;
             cursor: pointer;
@@ -77,8 +79,13 @@
             transition: 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+            font-weight: bold;
         }
-        button:hover { background: #4a0001; box-shadow: 0 0 15px #d3a625; }
+        button:hover { 
+            background: linear-gradient(to bottom, #e5b836, #c9971c);
+            box-shadow: 0 0 20px #d3a625; 
+        }
 
         /* --- SCREEN 2: DOBBY (LOCKED) --- */
         #dobby-screen { max-width: 600px; margin: auto; padding: 20px; }
@@ -182,10 +189,21 @@
             border: 2px solid #fff; transform: rotate(45deg);
             box-shadow: 0 0 25px rgba(211, 166, 37, 0.4);
         }
+
+        /* UPDATED GIFT PARCEL (Looks like a brown package now) */
         .gift-parcel {
             width: 120px; height: 120px;
-            background: #333; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            border: 2px dashed #999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background: #c2a374; /* Brown paper */
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            border: 3px solid #8b5a2b; /* Darker brown border */
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .gift-parcel::after {
+            content: ''; position: absolute; top: 50%; left: -10%; width: 120%; height: 4px;
+            background: #8b5a2b; transform: rotate(-15deg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         /* --- MODALS (Layer 100) --- */
@@ -223,7 +241,10 @@
 
         .close-btn { 
             position: absolute; top: 30px; right: 30px; 
-            font-size: 3rem; color: #fff; cursor: pointer; opacity: 0.7; 
+            font-size: 3rem; 
+            color: #d3a625; /* UPDATED: Gold color instead of white */
+            cursor: pointer; opacity: 0.8; 
+            text-shadow: 0 0 10px #000;
         }
         .close-btn:hover { opacity: 1; }
 
@@ -231,7 +252,6 @@
 </head>
 <body>
 
-    <!-- AUDIO PLAYER -->
     <audio id="bg-music" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
@@ -239,10 +259,8 @@
         <button onclick="toggleMusic()" style="font-size: 0.8rem; padding: 8px 15px; margin: 0;">🎵 Music</button>
     </div>
 
-    <!-- FIREWORKS CANVAS -->
     <canvas id="fireworksCanvas"></canvas>
 
-    <!-- STATE 1: ONBOARDING -->
     <div id="onboarding-screen">
         <h1 style="font-size: 2.5rem; text-shadow: 0 0 20px #d3a625;">Hogwarts Gate</h1>
         <p style="color: #bbb;">Identify yourself to the House Elf.</p>
@@ -257,47 +275,37 @@
         </div>
     </div>
 
-    <!-- STATE 2: DOBBY (LOCKED) -->
     <div id="dobby-screen" class="hidden">
         <div class="speech-bubble" id="dobby-text">
-            <!-- Text injected by JS -->
-        </div>
+            </div>
         <img src="Dobby.png" alt="Dobby" class="dobby-img">
     </div>
 
-    <!-- STATE 3: FAT LADY (PASSWORD) -->
     <div id="fat-lady-screen" class="hidden">
         <div class="password-container">
             <h2 style="margin: 0 0 15px 0; color: #d3a625;">Password?</h2>
-            <input type="text" id="password-input" placeholder="Speak, friend..." style="width: 250px; padding: 12px; font-size: 1.1rem; text-align: center;">
+            <input type="text" id="password-input" placeholder="Speak, friend..." style="width: 250px; padding: 12px; font-size: 1.1rem; text-align: center; background-color: #fcf5e5; color: #3e2723; border: 2px solid #d3a625; font-family: 'Cinzel', serif;">
             <br>
             <button onclick="checkPassword()">Enter</button>
             <p id="password-error" style="color: #ff4444; display: none; margin-top: 15px; font-family: 'Great Vibes'; font-size: 1.5rem;">"No, that's not it!"</p>
         </div>
     </div>
 
-    <!-- STATE 4: GIFTS (UNLOCKED) -->
     <div id="gifts-screen" class="hidden">
         <h1 class="fade-in" style="font-size: 3rem; margin-bottom: 10px; color: #d3a625; text-shadow: 0 0 20px #d3a625;">Happy New Year!</h1>
         <p class="fade-in" style="font-family: 'Great Vibes'; font-size: 1.5rem; color: #bbb;">2026</p>
         
         <div id="gifts-container">
-            <!-- Gift 1: The Greeting Card -->
             <div class="gift-item" onclick="flipCard(this)">
                 <div class="card-inner">
-                    <!-- Front is Image -->
                     <div class="card-front">
-                        <!-- BG Image set in CSS -->
-                    </div>
-                    <!-- Back is Dynamic Letter (Populated by JS) -->
+                        </div>
                     <div class="card-back" id="card-letter-content">
-                        <!-- Text injected via JS -->
-                    </div>
+                        </div>
                 </div>
                 <div class="gift-label">The Card</div>
             </div>
 
-            <!-- Gift 2: The Snitch Box -->
             <div class="gift-item" onclick="openSnitch()">
                 <div class="gift-box-wrapper">
                     <div class="gift-box"></div>
@@ -305,7 +313,6 @@
                 <div class="gift-label">The Seeker</div>
             </div>
 
-            <!-- Gift 3: The Cloak Parcel -->
             <div class="gift-item" onclick="openCloak()">
                 <div class="gift-box-wrapper">
                     <div class="gift-parcel"></div>
@@ -315,12 +322,10 @@
         </div>
     </div>
 
-    <!-- MODAL POPUP -->
     <div id="modal-overlay" class="modal hidden" onclick="closeModal()">
         <span class="close-btn">&times;</span>
         <div id="modal-content">
-            <!-- Content injected by JS -->
-        </div>
+            </div>
     </div>
 
     <script>
