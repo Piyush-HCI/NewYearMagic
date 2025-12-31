@@ -6,7 +6,6 @@
     <title>A Magical New Year</title>
     <style>
         /* --- FONTS --- */
-        /* 'Cinzel' for headers, 'Great Vibes' for parchment, 'Quintessential' for Dobby (Readable Cursive) */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Quintessential&display=swap');
 
         body {
@@ -22,380 +21,370 @@
             min-height: 100vh;
             overflow-x: hidden;
             text-align: center;
-            /* Background Gradient acts as the "Floor" (Layer 0) */
+            /* Dark Hogwarts Night Gradient */
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
 
-        /* --- LAYERS UTILITIES --- */
+        /* --- UTILITIES & ANIMATIONS --- */
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 2s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- FIREWORKS CANVAS (Layer 1) --- */
-        canvas { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            pointer-events: none; 
-            z-index: 1; /* Behind the content */
+        
+        @keyframes flyIn {
+            0% { transform: scale(0) translateY(100px) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) translateY(-20px) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
         }
 
-        /* --- CONTENT WRAPPERS (Layer 10 - Above Fireworks) --- */
+        @keyframes hoverFloat { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-10px); } 
+        }
+
+        /* --- LAYERING (Z-Index Hierarchy) --- */
+        canvas { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; 
+            z-index: 1; /* Lowest layer */
+        }
+        
         #onboarding-screen, #dobby-screen, #fat-lady-screen, #gifts-screen {
-            z-index: 10;
-            position: relative; /* Essential for z-index to work */
+            z-index: 10; /* Content layer */
+            position: relative;
+            width: 100%;
         }
 
         /* --- SCREEN 1: ONBOARDING --- */
         #onboarding-screen input, #onboarding-screen select {
-            padding: 10px;
+            padding: 12px;
             margin: 10px;
             font-family: 'Cinzel', serif;
             background: rgba(0,0,0,0.7);
             border: 1px solid #d3a625;
             color: #fff;
             font-size: 1rem;
+            border-radius: 4px;
         }
         button {
-            padding: 10px 20px;
-            background: #740001; /* Gryffindor Red */
+            padding: 12px 30px;
+            background: #740001;
             color: #fff;
-            border: 1px solid #d3a625;
+            border: 2px solid #d3a625;
             font-family: 'Cinzel', serif;
             cursor: pointer;
             margin-top: 20px;
             font-size: 1.2rem;
             transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        button:hover { background: #4a0001; transform: scale(1.05); }
+        button:hover { background: #4a0001; box-shadow: 0 0 15px #d3a625; }
 
         /* --- SCREEN 2: DOBBY (LOCKED) --- */
-        #dobby-screen {
-            max-width: 600px;
-            margin: auto;
-        }
+        #dobby-screen { max-width: 600px; margin: auto; padding: 20px; }
         .dobby-img {
             height: 300px; 
             width: auto;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+            margin-top: 20px;
         }
         .speech-bubble {
-            background: #fff;
-            color: #000;
-            /* UPDATED FONT FOR LEGIBILITY */
+            background: #fdf5e6;
+            color: #2b2b2b;
             font-family: 'Quintessential', cursive; 
-            padding: 25px;
+            padding: 30px;
             border-radius: 20px;
             position: relative;
-            margin-bottom: 20px;
-            font-size: 1.4rem; /* Increased size for readability */
+            font-size: 1.5rem;
             line-height: 1.4;
-            max-width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            max-width: 90%;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid #d3a625;
         }
         .speech-bubble:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border: 20px solid transparent;
-            border-top-color: #fff;
-            border-bottom: 0;
-            margin-left: -20px;
-            margin-bottom: -20px;
+            content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 0;
+            border: 20px solid transparent; border-top-color: #fdf5e6; border-bottom: 0;
+            margin-left: -20px; margin-bottom: -20px;
         }
 
         /* --- SCREEN 3: FAT LADY (PASSWORD) --- */
         #fat-lady-screen {
             background: url('FatLady.jpg') no-repeat center center;
             background-size: cover;
-            width: 100%;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end; 
-            align-items: center;
-            padding-bottom: 100px;
-            box-shadow: inset 0 0 100px #000;
+            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            padding-bottom: 15vh;
+            box-shadow: inset 0 0 150px #000;
         }
         .password-container {
-            background: rgba(0,0,0,0.85);
-            padding: 25px;
-            border-radius: 10px;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 15px;
             border: 2px solid #d3a625;
+            box-shadow: 0 0 30px #000;
         }
 
         /* --- SCREEN 4: GIFTS (UNLOCKED) --- */
         #gifts-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 40px;
         }
         .gift-item {
-            width: 160px;
-            height: 160px;
-            perspective: 1000px;
-            cursor: pointer;
-            transition: transform 0.2s;
+            width: 160px; height: 160px; perspective: 1000px; cursor: pointer; transition: transform 0.3s;
         }
-        .gift-item:hover { transform: translateY(-10px); }
-        
+        .gift-item:hover { transform: translateY(-15px); }
+        .gift-label { font-size: 0.9rem; margin-top: 10px; color: #888; letter-spacing: 1px; }
+
         /* Gift 1: Card Flip */
         .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.8s; transform-style: preserve-3d;
         }
         .card-inner.flipped { transform: rotateY(180deg); }
         .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #d3a625;
-            border-radius: 5px;
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #d3a625; border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .card-front { background-color: #740001; color: white; }
         .card-back { 
-            background-color: #f0e68c; 
-            color: #000; 
-            transform: rotateY(180deg); 
-            font-size: 0.8rem; 
-            padding: 10px;
-            overflow-y: auto;
-            font-family: 'Cinzel', serif;
+            background-color: #f0e68c; color: #000; transform: rotateY(180deg);
+            font-size: 0.8rem; padding: 10px; overflow-y: auto; font-family: 'Cinzel', serif;
         }
 
-        /* Gift 2: The Box (Cube) */
-        .box-cube {
-            width: 100px; height: 100px;
-            background: #d3a625;
-            margin: 30px auto;
-            position: relative;
-            transform: rotateZ(45deg);
-            border: 2px solid #fff;
-            box-shadow: 0 0 20px #d3a625;
+        /* Gift 2 & 3: Containers */
+        .gift-box {
+            width: 100px; height: 100px; margin: 30px auto;
+            background: linear-gradient(135deg, #d3a625, #b8860b);
+            border: 2px solid #fff; transform: rotate(45deg);
+            box-shadow: 0 0 25px rgba(211, 166, 37, 0.4);
         }
-        .box-lid {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.2);
+        .gift-parcel {
+            width: 120px; height: 120px; margin: 20px auto;
+            background: #333; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            border: 2px dashed #999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        /* Gift 3: The Parcel */
-        .parcel-shape {
-            width: 120px; height: 120px;
-            background: #3e3e3e; /* Darker grey fabric */
-            border-radius: 50% 50% 50% 5%;
-            margin: 20px auto;
-            border: 2px dashed #a0a0a0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        /* --- MODALS (Layer 100 - Top) --- */
+        /* --- MODALS (Layer 100) --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 100;
         }
+        
+        /* The Parchment Background for Quotes */
         .parchment-bg {
             background: url('Parchment.png') no-repeat center center;
-            background-size: contain;
-            width: 90%; max-width: 600px; height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px;
-            box-sizing: border-box; /* Ensures padding doesn't break width */
-            color: #3e2723;
+            background-size: 100% 100%; /* Stretch to fit */
+            width: 90%; max-width: 500px; 
+            min-height: 400px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 60px 40px;
+            box-sizing: border-box;
+            color: #3e2723; /* Dark Brown Ink */
             font-family: 'Great Vibes', cursive;
             font-size: 1.8rem;
             text-align: center;
             line-height: 1.4;
+            filter: drop-shadow(0 0 20px #000);
         }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: #fff; cursor: pointer; }
+
+        .flying-snitch {
+            width: 150px; height: auto;
+            animation: flyIn 1s ease-out forwards, hoverFloat 2s ease-in-out infinite 1s;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+        }
+
+        .close-btn { 
+            position: absolute; top: 30px; right: 30px; 
+            font-size: 3rem; color: #fff; cursor: pointer; opacity: 0.7; 
+        }
+        .close-btn:hover { opacity: 1; }
 
     </style>
 </head>
 <body>
 
+    <!-- AUDIO PLAYER -->
     <audio id="bg-music" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
-    <div style="position: absolute; top: 10px; right: 10px; z-index: 200;">
-        <button onclick="toggleMusic()" style="font-size: 0.8rem; padding: 5px;">🎵 Toggle Music</button>
+    <div style="position: absolute; top: 15px; right: 15px; z-index: 200;">
+        <button onclick="toggleMusic()" style="font-size: 0.8rem; padding: 8px 15px; margin: 0;">🎵 Music</button>
     </div>
 
+    <!-- FIREWORKS CANVAS -->
     <canvas id="fireworksCanvas"></canvas>
 
+    <!-- STATE 1: ONBOARDING -->
     <div id="onboarding-screen">
-        <h1>Welcome, Traveler</h1>
-        <p>Before you proceed, Dobby must know who you are.</p>
-        <input type="text" id="user-name" placeholder="Your Name">
-        <select id="user-gender">
-            <option value="male">Wizard</option>
-            <option value="female">Witch</option>
-        </select>
-        <br>
-        <button onclick="submitOnboarding()">Enter</button>
+        <h1 style="font-size: 2.5rem; text-shadow: 0 0 20px #d3a625;">Hogwarts Gate</h1>
+        <p style="color: #bbb;">Identify yourself to the House Elf.</p>
+        <div style="margin-top: 30px;">
+            <input type="text" id="user-name" placeholder="Your Name" autocomplete="off">
+            <select id="user-gender">
+                <option value="male">Wizard</option>
+                <option value="female">Witch</option>
+            </select>
+            <br>
+            <button onclick="submitOnboarding()">I solemnly swear...</button>
+        </div>
     </div>
 
+    <!-- STATE 2: DOBBY (LOCKED) -->
     <div id="dobby-screen" class="hidden">
         <div class="speech-bubble" id="dobby-text">
-            </div>
+            <!-- Text injected by JS -->
+        </div>
         <img src="Dobby.png" alt="Dobby" class="dobby-img">
     </div>
 
+    <!-- STATE 3: FAT LADY (PASSWORD) -->
     <div id="fat-lady-screen" class="hidden">
         <div class="password-container">
-            <h2 style="margin: 0 0 10px 0;">Password?</h2>
-            <input type="text" id="password-input" placeholder="Type the password..." style="width: 250px; padding: 10px;">
+            <h2 style="margin: 0 0 15px 0; color: #d3a625;">Password?</h2>
+            <input type="text" id="password-input" placeholder="Speak, friend..." style="width: 250px; padding: 12px; font-size: 1.1rem; text-align: center;">
             <br>
-            <button onclick="checkPassword()">Submit</button>
-            <p id="password-error" style="color: red; display: none;">Strict, aren't we?</p>
+            <button onclick="checkPassword()">Enter</button>
+            <p id="password-error" style="color: #ff4444; display: none; margin-top: 15px; font-family: 'Great Vibes'; font-size: 1.5rem;">"No, that's not it!"</p>
         </div>
     </div>
 
+    <!-- STATE 4: GIFTS (UNLOCKED) -->
     <div id="gifts-screen" class="hidden">
-        <h1 class="fade-in">Happy New Year!</h1>
+        <h1 class="fade-in" style="font-size: 3rem; margin-bottom: 10px; color: #d3a625; text-shadow: 0 0 20px #d3a625;">Welcome Home</h1>
+        <p class="fade-in" style="font-family: 'Great Vibes'; font-size: 1.5rem; color: #bbb;">2026</p>
+        
         <div id="gifts-container">
-            
+            <!-- Gift 1: The Card -->
             <div class="gift-item" onclick="flipCard(this)">
                 <div class="card-inner">
                     <div class="card-front">
-                        <h3>A Greeting<br>(Tap to Flip)</h3>
+                        <h3>A Greeting<br><span style="font-size: 0.7rem; font-weight: normal;">(Tap to Flip)</span></h3>
                     </div>
                     <div class="card-back">
-                        <p><strong>Prompt Used:</strong><br>[INSERT YOUR AI PROMPT HERE]</p>
-                        <p style="font-size: 0.6rem; color: #555;">(Click again to close)</p>
+                        <p style="font-weight: bold; margin-bottom: 5px;">The Prompt:</p>
+                        <p style="font-style: italic;">[INSERT YOUR AI PROMPT HERE]</p>
+                        <p style="font-size: 0.6rem; color: #555; margin-top: 10px;">(Tap to close)</p>
                     </div>
                 </div>
+                <div class="gift-label">The Letter</div>
             </div>
 
+            <!-- Gift 2: The Snitch Box -->
             <div class="gift-item" onclick="openSnitch()">
-                <div class="box-cube">
-                    <div class="box-lid"></div>
-                </div>
-                <p style="font-size: 0.8rem; margin-top: -10px;">The Snitch</p>
+                <div class="gift-box"></div>
+                <div class="gift-label">The Seeker</div>
             </div>
 
+            <!-- Gift 3: The Cloak Parcel -->
             <div class="gift-item" onclick="openCloak()">
-                <div class="parcel-shape"></div>
-                <p style="font-size: 0.8rem; margin-top: -10px;">A Parcel</p>
+                <div class="gift-parcel"></div>
+                <div class="gift-label">The Invisible</div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL POPUP -->
     <div id="modal-overlay" class="modal hidden" onclick="closeModal()">
         <span class="close-btn">&times;</span>
         <div id="modal-content">
-            </div>
+            <!-- Content injected by JS -->
+        </div>
     </div>
 
     <script>
-        // CONFIGURATION
-        // Set this to Jan 1, 2026 for the real event
-        const targetDate = new Date("January 1, 2026 00:00:00").getTime(); 
+        /* =========================================
+           CONFIGURATION ZONE
+           ========================================= */
         
+        // 1. DATE: Jan 1, 2026 00:00:00
+        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+        
+        // 2. DEBUGGING: Set this to 'true' to skip waiting (for testing)
+        // IMPORTANT: Set back to 'false' before sending to friends!
+        const TEST_MODE = true; 
+
+        /* ========================================= */
+
         let userName = "";
         let userGender = "";
         const music = document.getElementById('bg-music');
-        let fireworksActive = false; // Flag to control fireworks duration
+        let fireworksActive = false;
 
-        /* --- 1. ONBOARDING LOGIC --- */
         function submitOnboarding() {
             userName = document.getElementById('user-name').value.trim();
             userGender = document.getElementById('user-gender').value;
-
-            if(!userName) { alert("Dobby needs a name!"); return; }
-
+            if(!userName) { alert("Dobby needs a name, sir/ma'am!"); return; }
             document.getElementById('onboarding-screen').classList.add('hidden');
             checkTime();
         }
 
-        /* --- 2. TIME & DOBBY LOGIC --- */
         function checkTime() {
             const now = new Date().getTime();
             
-            // IF IT IS NOT YET TIME
-            if (now < targetDate) {
+            // Logic: If Testing is ON, OR Current Time > Target Time -> UNLOCK
+            if (TEST_MODE || now >= targetDate) {
+                document.getElementById('fat-lady-screen').classList.remove('hidden');
+            } 
+            else {
                 document.getElementById('dobby-screen').classList.remove('hidden');
-                
                 const dobbyText = document.getElementById('dobby-text');
                 
-                // Dobby Speak Logic
                 if (userGender === 'male') {
-                    dobbyText.innerHTML = `Dobby sees a wizard... Master ${userName} is being a bad boy! Dobby knows he is trying to open his gifts early! Dobby must not let him pass until the clock strikes twelve!`;
+                    dobbyText.innerHTML = `Dobby sees a wizard... Master <strong>${userName}</strong> is being a bad boy! Dobby knows he is trying to open his gifts early! Dobby must not let him pass until the clock strikes twelve!`;
                 } else {
-                    dobbyText.innerHTML = `Dobby sees a witch... Miss ${userName} is being a bad girl! Dobby is thinking she is very sneaky trying to peek early. Dobby cannot let her pass!`;
+                    dobbyText.innerHTML = `Dobby sees a witch... Miss <strong>${userName}</strong> is being a bad girl! Dobby is thinking she is very sneaky trying to peek early. Dobby cannot let her pass!`;
                 }
-            } 
-            // IF IT IS TIME
-            else {
-                document.getElementById('fat-lady-screen').classList.remove('hidden');
             }
         }
 
-        /* --- 3. PASSWORD LOGIC --- */
         function checkPassword() {
             const input = document.getElementById('password-input').value.toLowerCase().trim();
-            
             if (input.includes("solemnly swear that i am up to no good")) {
                 document.getElementById('fat-lady-screen').classList.add('hidden');
                 document.getElementById('gifts-screen').classList.remove('hidden');
-                startFireworks(); // Boom!
+                startFireworks();
             } else {
                 document.getElementById('password-error').style.display = 'block';
-                document.getElementById('password-error').innerText = "The Fat Lady says: 'No, that's not it!'";
             }
         }
 
-        /* --- 4. GIFTS LOGIC --- */
-        
-        // Gift 1: Flip
         function flipCard(element) {
             const inner = element.querySelector('.card-inner');
             inner.classList.toggle('flipped');
         }
 
-        // Gift 2: Snitch
         function openSnitch() {
             const modal = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             modal.classList.remove('hidden');
 
+            // Shows Snitch Image + Quote on Parchment
             content.innerHTML = `
                 <div class="parchment-bg">
-                    <p>"Alright, um, now then, remember just because you made the team last year, that doesn't guarantee you a spot this year, is that clear?"<br><br>- Harry Potter</p>
+                    <img src="Snitch.jpeg" class="flying-snitch">
+                    <p>"Alright, um, now then, remember just because you made the team last year, that doesn't guarantee you a spot this year, is that clear?"</p>
+                    <p style="font-size: 1.2rem; margin-top: 10px;">- Harry Potter</p>
                 </div>
             `;
         }
 
-        // Gift 3: Cloak
         function openCloak() {
             const modal = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             modal.classList.remove('hidden');
 
+            // Shows Cloak Image + Quote on Parchment
             content.innerHTML = `
-                <img src="Cloak.jpg" style="max-width:80%; max-height: 50vh; border-radius:10px; border:2px solid #d3a625;">
-                <div style="background:rgba(0,0,0,0.8); padding:20px; border-radius:10px; margin-top:10px; color:#fff; max-width: 80%;">
-                    <p>"Words are, in my not-so-humble opinion, our most inexhaustible source of magic. Capable of both inflicting injury, and remedying it."<br>- Albus Dumbledore</p>
+                <div class="parchment-bg" style="justify-content: flex-start; padding-top: 50px;">
+                    <img src="Cloak.jpg" style="width: 150px; border-radius: 10px; border: 2px solid #3e2723; margin-bottom: 20px;">
+                    <p>"Words are, in my not-so-humble opinion, our most inexhaustible source of magic. Capable of both inflicting injury, and remedying it."</p>
+                    <p style="font-size: 1.2rem; margin-top: 10px;">- Albus Dumbledore</p>
                 </div>
             `;
         }
@@ -408,14 +397,10 @@
             if(music.paused) { music.play(); } else { music.pause(); }
         }
 
-        /* --- FIREWORKS ENGINE (30 Seconds Max) --- */
+        // Fireworks Engine (30s Timer)
         function startFireworks() {
             fireworksActive = true;
-            
-            // Set Timer to stop new fireworks after 30 seconds
-            setTimeout(() => {
-                fireworksActive = false;
-            }, 30000); // 30,000 milliseconds = 30 seconds
+            setTimeout(() => { fireworksActive = false; }, 30000); 
 
             const canvas = document.getElementById("fireworksCanvas");
             const ctx = canvas.getContext("2d");
@@ -424,31 +409,22 @@
             let particles = [];
             
             function animate() {
-                // If fireworks are done and no particles left, stop the animation loop to save battery
                 if (!fireworksActive && particles.length === 0) return;
-
                 requestAnimationFrame(animate);
-                
-                // Clear the canvas slightly for trail effect
-                ctx.fillStyle = 'rgba(14, 14, 14, 0.2)'; // Increased opacity slightly to clear previous frames faster
+                ctx.fillStyle = 'rgba(14, 14, 14, 0.2)'; 
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Add new particles ONLY if time isn't up
                 if (fireworksActive && Math.random() < 0.1) {
                     const x = Math.random() * canvas.width;
                     const y = Math.random() * canvas.height;
                     const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
                     for (let i = 0; i < 30; i++) {
                         particles.push({
-                            x: x, y: y, color: color,
-                            radius: Math.random() * 3,
-                            velocity: { x: (Math.random()-0.5)*6, y: (Math.random()-0.5)*6 },
-                            alpha: 1
+                            x: x, y: y, color: color, radius: Math.random() * 3,
+                            velocity: { x: (Math.random()-0.5)*6, y: (Math.random()-0.5)*6 }, alpha: 1
                         });
                     }
                 }
-
-                // Update existing particles
                 particles.forEach((p, index) => {
                     if (p.alpha > 0) {
                         ctx.save(); ctx.globalAlpha = p.alpha; ctx.beginPath();
