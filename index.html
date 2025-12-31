@@ -126,42 +126,64 @@
         }
 
         /* --- SCREEN 4: GIFTS (UNLOCKED) --- */
+        #gifts-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+        }
         #gifts-container {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 40px;
         }
         .gift-item {
-            width: 160px; height: 160px; perspective: 1000px; cursor: pointer; transition: transform 0.3s;
+            width: 200px; height: 280px; /* Taller for the letter */
+            perspective: 1000px; cursor: pointer; transition: transform 0.3s;
         }
-        .gift-item:hover { transform: translateY(-15px); }
+        .gift-item:hover { transform: translateY(-10px); }
         .gift-label { font-size: 0.9rem; margin-top: 10px; color: #888; letter-spacing: 1px; }
 
-        /* Gift 1: Card Flip */
+        /* Gift 1: The Greeting Card */
         .card-inner {
             position: relative; width: 100%; height: 100%; text-align: center;
             transition: transform 0.8s; transform-style: preserve-3d;
         }
         .card-inner.flipped { transform: rotateY(180deg); }
+        
         .card-front, .card-back {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
             display: flex; align-items: center; justify-content: center;
-            border: 2px solid #d3a625; border-radius: 8px;
+            border: 4px solid #d3a625; border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background-color: #1a1a1a;
+            overflow: hidden;
         }
-        .card-front { background-color: #740001; color: white; }
+        
+        /* Front shows your generated image */
+        .card-front { 
+            background: url('GreetingCard.jpg') no-repeat center center; 
+            background-size: cover; 
+        }
+        
+        /* Back shows the Personalized Letter */
         .card-back { 
-            background-color: #f0e68c; color: #000; transform: rotateY(180deg);
-            font-size: 0.8rem; padding: 10px; overflow-y: auto; font-family: 'Cinzel', serif;
+            background-color: #f0e68c; color: #3e2723; transform: rotateY(180deg);
+            padding: 20px; overflow-y: auto; 
+            font-family: 'Great Vibes', cursive; /* Handwritten font */
+            flex-direction: column; justify-content: center;
+            line-height: 1.4;
+            font-size: 1.3rem;
+            text-align: left;
         }
 
-        /* Gift 2 & 3: Containers */
+        /* Gift 2 & 3: Shapes (Smaller containers to match layout) */
+        .gift-box-wrapper {
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+        }
         .gift-box {
-            width: 100px; height: 100px; margin: 30px auto;
+            width: 100px; height: 100px; 
             background: linear-gradient(135deg, #d3a625, #b8860b);
             border: 2px solid #fff; transform: rotate(45deg);
             box-shadow: 0 0 25px rgba(211, 166, 37, 0.4);
         }
         .gift-parcel {
-            width: 120px; height: 120px; margin: 20px auto;
+            width: 120px; height: 120px;
             background: #333; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             border: 2px dashed #999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
@@ -260,30 +282,34 @@
         <p class="fade-in" style="font-family: 'Great Vibes'; font-size: 1.5rem; color: #bbb;">2026</p>
         
         <div id="gifts-container">
-            <!-- Gift 1: The Card -->
+            <!-- Gift 1: The Greeting Card -->
             <div class="gift-item" onclick="flipCard(this)">
                 <div class="card-inner">
+                    <!-- Front is Image -->
                     <div class="card-front">
-                        <h3>A Greeting<br><span style="font-size: 0.7rem; font-weight: normal;">(Tap to Flip)</span></h3>
+                        <!-- BG Image set in CSS -->
                     </div>
-                    <div class="card-back">
-                        <p style="font-weight: bold; margin-bottom: 5px;">The Prompt:</p>
-                        <p style="font-style: italic;">[INSERT YOUR AI PROMPT HERE]</p>
-                        <p style="font-size: 0.6rem; color: #555; margin-top: 10px;">(Tap to close)</p>
+                    <!-- Back is Dynamic Letter (Populated by JS) -->
+                    <div class="card-back" id="card-letter-content">
+                        <!-- Text injected via JS -->
                     </div>
                 </div>
-                <div class="gift-label">The Letter</div>
+                <div class="gift-label">The Card</div>
             </div>
 
             <!-- Gift 2: The Snitch Box -->
             <div class="gift-item" onclick="openSnitch()">
-                <div class="gift-box"></div>
+                <div class="gift-box-wrapper">
+                    <div class="gift-box"></div>
+                </div>
                 <div class="gift-label">The Seeker</div>
             </div>
 
             <!-- Gift 3: The Cloak Parcel -->
             <div class="gift-item" onclick="openCloak()">
-                <div class="gift-parcel"></div>
+                <div class="gift-box-wrapper">
+                    <div class="gift-parcel"></div>
+                </div>
                 <div class="gift-label">The Invisible</div>
             </div>
         </div>
@@ -305,8 +331,8 @@
         // 1. DATE: Jan 1, 2026 00:00:00
         const targetDate = new Date("January 1, 2026 00:00:00").getTime();
         
-        // 2. DEBUGGING: Set this to 'true' to skip waiting (for testing)
-        // IMPORTANT: Set back to 'false' before sending to friends!
+        // 2. DEBUGGING: Set to 'true' to skip lock (for testing)
+        // IMPORTANT: Set to 'false' before sending!
         const TEST_MODE = false; 
 
         /* ========================================= */
@@ -320,6 +346,18 @@
             userName = document.getElementById('user-name').value.trim();
             userGender = document.getElementById('user-gender').value;
             if(!userName) { alert("Dobby needs a name, sir/ma'am!"); return; }
+            
+            // Populate the Letter immediately
+            const letterContent = document.getElementById('card-letter-content');
+            letterContent.innerHTML = `
+                Dearest <strong>${userName}</strong>,<br><br>
+                Another year has passed, and even a Time-Turner cannot bring it back. But the future is ours to write.<br><br>
+                I have saved you a seat by the fire in the Common Room.<br><br>
+                Have a magical 2026!<br><br>
+                Yours,<br>
+                Piyush
+            `;
+
             document.getElementById('onboarding-screen').classList.add('hidden');
             checkTime();
         }
@@ -327,7 +365,6 @@
         function checkTime() {
             const now = new Date().getTime();
             
-            // Logic: If Testing is ON, OR Current Time > Target Time -> UNLOCK
             if (TEST_MODE || now >= targetDate) {
                 document.getElementById('fat-lady-screen').classList.remove('hidden');
             } 
@@ -349,6 +386,7 @@
                 document.getElementById('fat-lady-screen').classList.add('hidden');
                 document.getElementById('gifts-screen').classList.remove('hidden');
                 startFireworks();
+                music.play().catch(e => console.log("Auto-play prevented by browser"));
             } else {
                 document.getElementById('password-error').style.display = 'block';
             }
@@ -364,7 +402,6 @@
             const content = document.getElementById('modal-content');
             modal.classList.remove('hidden');
 
-            // Shows Snitch Image + Quote on Parchment
             content.innerHTML = `
                 <div class="parchment-bg">
                     <img src="Snitch.jpeg" class="flying-snitch">
@@ -379,7 +416,6 @@
             const content = document.getElementById('modal-content');
             modal.classList.remove('hidden');
 
-            // Shows Cloak Image + Quote on Parchment
             content.innerHTML = `
                 <div class="parchment-bg" style="justify-content: flex-start; padding-top: 50px;">
                     <img src="Cloak.jpg" style="width: 150px; border-radius: 10px; border: 2px solid #3e2723; margin-bottom: 20px;">
@@ -397,7 +433,7 @@
             if(music.paused) { music.play(); } else { music.pause(); }
         }
 
-        // Fireworks Engine (30s Timer)
+        // Fireworks Engine
         function startFireworks() {
             fireworksActive = true;
             setTimeout(() => { fireworksActive = false; }, 30000); 
