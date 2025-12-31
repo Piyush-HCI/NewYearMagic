@@ -66,7 +66,6 @@
             border-radius: 4px;
         }
         
-        /* UPDATED BUTTON STYLE (Gold/Bronze instead of Red) */
         button {
             padding: 12px 30px;
             background: linear-gradient(to bottom, #d3a625, #b8860b);
@@ -143,7 +142,10 @@
             width: 200px; height: 280px; /* Taller for the letter */
             perspective: 1000px; cursor: pointer; transition: transform 0.3s;
         }
+        /* When hovering the container, scale up the images */
         .gift-item:hover { transform: translateY(-10px); }
+        .gift-item:hover .gift-icon-img { transform: scale(1.1); }
+        
         .gift-label { font-size: 0.9rem; margin-top: 10px; color: #888; letter-spacing: 1px; }
 
         /* Gift 1: The Greeting Card */
@@ -179,31 +181,16 @@
             text-align: left;
         }
 
-        /* Gift 2 & 3: Shapes (Smaller containers to match layout) */
+        /* NEW IMAGE STYLING FOR SNITCH & POUCH */
         .gift-box-wrapper {
             width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
         }
-        .gift-box {
-            width: 100px; height: 100px; 
-            background: linear-gradient(135deg, #d3a625, #b8860b);
-            border: 2px solid #fff; transform: rotate(45deg);
-            box-shadow: 0 0 25px rgba(211, 166, 37, 0.4);
-        }
-
-        /* UPDATED GIFT PARCEL (Looks like a brown package now) */
-        .gift-parcel {
-            width: 120px; height: 120px;
-            background: #c2a374; /* Brown paper */
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            border: 3px solid #8b5a2b; /* Darker brown border */
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        .gift-parcel::after {
-            content: ''; position: absolute; top: 50%; left: -10%; width: 120%; height: 4px;
-            background: #8b5a2b; transform: rotate(-15deg);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        
+        .gift-icon-img {
+            width: 140px; /* Size of the icon */
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(211, 166, 37, 0.6)); /* Magical gold glow */
+            transition: transform 0.3s ease;
         }
 
         /* --- MODALS (Layer 100) --- */
@@ -242,7 +229,7 @@
         .close-btn { 
             position: absolute; top: 30px; right: 30px; 
             font-size: 3rem; 
-            color: #d3a625; /* UPDATED: Gold color instead of white */
+            color: #d3a625; /* Gold */
             cursor: pointer; opacity: 0.8; 
             text-shadow: 0 0 10px #000;
         }
@@ -308,14 +295,14 @@
 
             <div class="gift-item" onclick="openSnitch()">
                 <div class="gift-box-wrapper">
-                    <div class="gift-box"></div>
+                    <img src="Snitch01.jpeg" class="gift-icon-img" alt="Golden Snitch">
                 </div>
                 <div class="gift-label">The Seeker</div>
             </div>
 
             <div class="gift-item" onclick="openCloak()">
                 <div class="gift-box-wrapper">
-                    <div class="gift-parcel"></div>
+                    <img src="Pouch.png" class="gift-icon-img" alt="Invisible Cloak Pouch">
                 </div>
                 <div class="gift-label">The Invisible</div>
             </div>
@@ -336,8 +323,7 @@
         // 1. DATE: Jan 1, 2026 00:00:00
         const targetDate = new Date("January 1, 2026 00:00:00").getTime();
         
-        // 2. DEBUGGING: Set to 'true' to skip lock (for testing)
-        // IMPORTANT: Set to 'false' before sending!
+        // 2. DEBUGGING: Set to 'false' for Final Production
         const TEST_MODE = true; 
 
         /* ========================================= */
